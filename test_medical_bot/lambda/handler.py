@@ -1,4 +1,5 @@
-import json
+
+
 from book_appointment_handler import handle_book_appointment
 from Get_medical_info_handler import get_medical_info
 from Get_Symptoms_Advice_handler import handle_get_symptoms_advice
@@ -7,8 +8,10 @@ from check_availability_handler import handle_check_medication_availability
 from cancel_home_healthcare_handler import handle_cancel_home_health_care_appointment
 from home_healthcare_handler import  handle_home_health_care_appointment
 from upload_medical_analysis_handler import upload_medical_analysis_handler
+from GetSymptomsInfo_handler import handle_get_symptoms_info
 
 def handler(event, context):
+    
     # Extract slots and intent name
     slots = event['sessionState']['intent']['slots']
     intent = event['sessionState']['intent']['name']
@@ -31,3 +34,5 @@ def handler(event, context):
         return handle_check_medication_availability(event, slots, intent, invocation_source) 
     elif intent == "UploadMedicalAnalysis":
         return upload_medical_analysis_handler(event, slots, intent, invocation_source,context)
+    # elif intent =="GetSymptomsInfo" :
+    #     return  handle_get_symptoms_info(event, slots, intent, invocation_source,context)

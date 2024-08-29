@@ -114,7 +114,7 @@ def book_appointment():
                                 lex.CfnBot.MessageGroupProperty(
                                     message=lex.CfnBot.MessageProperty(
                                         plain_text_message=lex.CfnBot.PlainTextMessageProperty(
-                                            value="At what time would you like to book the appointment ? (Time should be either on the hour (00) or half-hour (30))"
+                                            value="At what time would you like to book the appointment ? (Time should be between08:00 and 17:30, inclusive, at half-hour intervals.)"
                                         )
                                     )
                                 )

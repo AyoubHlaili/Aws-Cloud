@@ -62,7 +62,7 @@ def fulfill_cancel_home_health_care_appointment(event, slots):
                 table.delete_item(
                     Key={'FullName': user_id, 'sortKey': item['sortKey']}
                 )
-            message_content = "Your appointments have been canceled."
+            message_content = "Your appointment has been canceled."
         else:
             message_content = "No matching appointments found to cancel."
     except Exception as e:

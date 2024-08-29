@@ -6,7 +6,8 @@ from aws_cdk import (
     aws_iam as iam,
     aws_lambda as _lambda,
     aws_apigateway as apigateway,
-    aws_s3 as s3
+    aws_s3 as s3,
+    RemovalPolicy,
 )
 import os 
 from constructs import Construct
@@ -28,6 +29,7 @@ from test_medical_bot.Intents.check_med_avalibility import check_med_availabilit
 from test_medical_bot.Intents.HomeHealthCare import (healthcare_service_slot_type,request_home_healthcare_intent)
 from test_medical_bot.Intents.CancelHomeHealthCareAppointment import cancel_home_healthcare_intent
 from test_medical_bot.Intents.UploadMedicalAnalysis import upload_medical_analysis
+from test_medical_bot.Intents.GetSymptomsInfo import get_symptoms_info
 
 class TestMedicalBotStack(Stack):
 
@@ -40,7 +42,7 @@ class TestMedicalBotStack(Stack):
              runtime=_lambda.Runtime.PYTHON_3_12,
              handler='handler.handler',
              code=_lambda.Code.from_asset(os.path.join(os.getcwd(), 'test_medical_bot', 'lambda')),
-            timeout=Duration.seconds(300)
+             timeout=Duration.seconds(300)
         )
          # Grant the Lambda function permission to be invoked by Lex
         fulfillment_lambda.add_permission("LexInvokePermission",
@@ -79,6 +81,18 @@ class TestMedicalBotStack(Stack):
         items.add_method("POST")
         items.add_method("DELETE")
         
+
+         # API Gateway
+        api_model = apigateway.LambdaRestApi(
+            self, "MedicalBotApi",
+            handler = fulfillment_lambda,
+            description="This service serves the medical bot.",
+            proxy=False
+        )
+
+        
+        path=api_model.root.add_resource("hello")  
+        path.add_method("GET")
         # Define the bot locale including the built-in Fallback Intent
         bot_locale = lex.CfnBot.BotLocaleProperty(
             locale_id="en_US",
@@ -95,7 +109,9 @@ class TestMedicalBotStack(Stack):
                 check_med_availability(),
                 request_home_healthcare_intent(),
                 cancel_home_healthcare_intent(),
-                upload_medical_analysis()
+                upload_medical_analysis(),
+                #get_symptoms_info()
+
             ],
              slot_types=[
                  appointment_type_slot_type,
@@ -178,4 +194,12 @@ class TestMedicalBotStack(Stack):
         
         
         # S3 Bucket
-        medicalanalysis_bucket = s3.Bucket(self, "MedicalAnalysisBucket")
+        medicalanalysis_bucket = s3.Bucket(self,
+                                            "MedicalAnalysisBucket",
+                                            removal_policy = RemovalPolicy.DESTROY
+                                           )
+        models = s3.Bucket(self,
+                           "ModelBucket",
+                          removal_policy = RemovalPolicy.DESTROY # Destroys the bucket when the stack is deleted
+        )
+        models.grant_read(fulfillment_lambda)

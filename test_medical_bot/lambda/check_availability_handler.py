@@ -6,7 +6,7 @@ import requests
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('Medicaments')
-API_GATEWAY_URL = " https://snhq6xqqv2.execute-api.us-east-1.amazonaws.com/prod/items"
+API_GATEWAY_URL = "https://tualfjiv9l.execute-api.us-east-1.amazonaws.com/prod/items"
 
 # Initialize DynamoDB resource
 dynamodb = boto3.resource(
@@ -63,7 +63,7 @@ def handle_check_medication_availability(event, slots, intent, invocation_source
             "SortKey":medication +"#",
             "Quantity": quantity_requested
         }
-        
+        print(payload)
         response = requests.post(API_GATEWAY_URL, json=payload)
         # Log the response for debugging
         print(f"Response Status Code: {response.status_code}")

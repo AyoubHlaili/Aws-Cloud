@@ -1,6 +1,7 @@
 
 
-from datetime import time
+import datetime
+import time
 from aiohttp import ClientError
 import boto3
 
@@ -81,19 +82,24 @@ def upload_medical_analysis_handler(event, slots, intent, invocation_source,cont
 
             # Upload to S3
             s3_client.put_object(
-                Bucket='testmedicalbotstack-medicalanalysisbucket631caf53-seogqdjkslxp',
+                Bucket='testmedicalbotstack-medicalanalysisbucket631caf53-yrteehwhm05o',
                 Key=image_name,
                 Body=image_data,
                 ContentType='image/png'
             )
+            # Generate a pre-signed URL for the image
+            presigned_url = s3_client.generate_presigned_url(
+                'get_object',
+                Params={'Bucket': 'testmedicalbotstack-medicalanalysisbucket631caf53-yrteehwhm05o', 'Key': image_name},
+                ExpiresIn=3600  # URL expiration time in seconds (1 hour)
+            )
             name = event['sessionState']['sessionAttributes'].get('Name', slots['Name']['value']['interpretedValue'])
-            upload_timestamp = event.get('requestAttributes', {}).get('requestTimestamp', time.strftime('%Y-%m-%dT%H:%M:%S'))
             # Store metadata in DynamoDB
             table.put_item(
                 Item={
-                    'FullName': name,
+                    'Name': name,
                     'ImageName': image_name,
-                    'UploadTimestamp': upload_timestamp
+                    'sortKey': str(datetime.datetime.now())
                 }
             )
             # Return success response
@@ -110,7 +116,9 @@ def upload_medical_analysis_handler(event, slots, intent, invocation_source,cont
                 "messages": [
                     {
                         "contentType": "PlainText",
-                        "content": "Your medical analysis has been successfully uploaded."
+                        "content": "Your medical analysis has been successfully uploaded. You can view the image here: "
+                                   f"{presigned_url}"
+                    
                     }
                 ]
             }
