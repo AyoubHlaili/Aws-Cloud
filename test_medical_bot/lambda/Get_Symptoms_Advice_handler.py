@@ -29,8 +29,9 @@ def validate(slots):
     return {'isValid': True}
 
 def handle_get_symptoms_advice(event, slots, intent, invocation_source):
+    print("hi")
     validation_result = validate(slots)
-    
+    print("hello")
     if invocation_source == 'DialogCodeHook':
         if not validation_result['isValid']:
             return {
@@ -46,8 +47,9 @@ def handle_get_symptoms_advice(event, slots, intent, invocation_source):
                 }
             }
         return delegate(slots, intent)
-
+    
     if invocation_source == 'FulfillmentCodeHook':
+        print("hey")
         user_id = event['sessionId']
         symptom_type = slots['SymptomType']['value']['interpretedValue']
         duration = slots['Duration']['value']['interpretedValue']

@@ -29,7 +29,7 @@ from test_medical_bot.Intents.check_med_avalibility import check_med_availabilit
 from test_medical_bot.Intents.HomeHealthCare import (healthcare_service_slot_type,request_home_healthcare_intent)
 from test_medical_bot.Intents.CancelHomeHealthCareAppointment import cancel_home_healthcare_intent
 from test_medical_bot.Intents.UploadMedicalAnalysis import upload_medical_analysis
-from test_medical_bot.Intents.GetSymptomsInfo import get_symptoms_info
+#from test_medical_bot.Intents.GetSymptomsInfo import get_symptoms_info
 
 class TestMedicalBotStack(Stack):
 

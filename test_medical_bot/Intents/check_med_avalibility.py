@@ -33,36 +33,14 @@ def check_med_availability():
                         )
                     )
                 ),
-                lex.CfnBot.SlotProperty(
-                    name="Quantity",
-                    slot_type_name="AMAZON.Number",
-                    value_elicitation_setting=lex.CfnBot.SlotValueElicitationSettingProperty(
-                        slot_constraint="Required",
-                        prompt_specification=lex.CfnBot.PromptSpecificationProperty(
-                            message_groups_list=[
-                                lex.CfnBot.MessageGroupProperty(
-                                    message=lex.CfnBot.MessageProperty(
-                                        plain_text_message=lex.CfnBot.PlainTextMessageProperty(
-                                            value="How many units do you need?"
-                                        )
-                                    )
-                                )
-                            ],
-                            max_retries=3,
-                            allow_interrupt=True
-                        )
-                    )
-                )
+                
             ],
             slot_priorities=[
                 lex.CfnBot.SlotPriorityProperty(
                     slot_name="Medication",
                     priority=1
                 ),
-                lex.CfnBot.SlotPriorityProperty(
-                    slot_name="Quantity",
-                    priority=2
-                ),
+                
             ],
             dialog_code_hook=lex.CfnBot.DialogCodeHookSettingProperty(
                 enabled=True
